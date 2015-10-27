@@ -1,6 +1,6 @@
 {% set os_ = salt['grains.get']('os', '') %}
 {% set os_major_release = salt['grains.get']('osrelease', '').split('.')[0] %}
-{% set distro = salt['grains.get']('oscodename', '')  %}
+{% set os_code_name = salt['grains.get']('oscodename', '')  %}
 
 {% if salt['pillar.get']('staging') %}
   {% set staging = 'staging/' %}
@@ -24,7 +24,7 @@
 
 get-key:
   cmd.run:
-    - name: wget -O - http://104.239.193.113/repo/{{ branch }}/testing/ubuntu/ubuntu{{ os_major_release }}/SALTSTACK-GPG-KEY.pub | apt-key add -
+    - name: wget -O - https://erepo.saltstack.com/sse/{{ branch }}/ubuntu/SALTSTACK-GPG-KEY.pub | apt-key add -
 
 add-repository:
   file.append:
@@ -33,7 +33,7 @@ add-repository:
 
         ####################
         # Enable SaltStack's package repository
-        deb http://104.239.193.113/repo/{{ branch }}/testing/ubuntu/ubuntu{{ os_major_release }} {{ distro }} main
+        deb https://erepo.saltstack.com/sse/{{ branch }}/ubuntu/ {{ os_code_name }} main
     - require:
       - cmd: get-key
 
